@@ -2,6 +2,7 @@ package com.severo.personapi.controller;
 
 import com.severo.personapi.dto.MessageResponseDTO;
 import com.severo.personapi.dto.request.PersonDTO;
+import com.severo.personapi.exception.PersonNotFoundException;
 import com.severo.personapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,11 @@ public class PersonController {
     @GetMapping
     public List<PersonDTO> listAll() {
         return personService.listAll();
+    }
+
+    @GetMapping("/{id}")
+    public PersonDTO findById(@PathVariable Long id) throws PersonNotFoundException {
+        return personService.findById(id);
     }
 
 }
