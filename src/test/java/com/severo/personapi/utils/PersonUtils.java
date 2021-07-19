@@ -10,7 +10,7 @@ public class PersonUtils {
 
     private static final String FIRST_NAME = "Robinson";
     private static final String LAST_NAME = "Severo";
-    private static final String CPF_NUMBER = "369.333.878-79";
+    private static final String CPF_NUMBER = "111.111.111-11";
     private static final long PERSON_ID = 1L;
     public static final LocalDate BIRTH_DATE = LocalDate.of(2010, 10, 1);
 

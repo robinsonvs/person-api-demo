@@ -1,4 +1,4 @@
-package com.severo.personapi.dto;
+package com.severo.personapi.dto.reponse;
 
 import lombok.Builder;
 import lombok.Data;

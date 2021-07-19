@@ -1,6 +1,6 @@
 package com.severo.personapi.controller;
 
-import com.severo.personapi.dto.MessageResponseDTO;
+import com.severo.personapi.dto.reponse.MessageResponseDTO;
 import com.severo.personapi.dto.request.PersonDTO;
 import com.severo.personapi.exception.PersonNotFoundException;
 import com.severo.personapi.service.PersonService;
@@ -22,7 +22,7 @@ public class PersonController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MessageResponseDTO createPerson(@RequestBody @Valid PersonDTO personDTO) {
-        return personService.createPerson(personDTO);
+        return personService.create(personDTO);
     }
 
     @GetMapping
