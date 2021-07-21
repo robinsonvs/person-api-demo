@@ -19,8 +19,7 @@ import java.util.Optional;
 import static com.severo.personapi.utils.PersonUtils.createFakeDTO;
 import static com.severo.personapi.utils.PersonUtils.createFakeEntity;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
@@ -118,7 +117,28 @@ public class PersonServiceTest {
         updatePersonDTORequest.setId(invalidPersonId);
         updatePersonDTORequest.setLastName("Severo updated");
 
-        //when(personRepository.findById(invalidPersonId)).then
+        when(personRepository.findById(invalidPersonId)).thenReturn(Optional.ofNullable(any(Person.class)));
+
+        assertThrows(PersonNotFoundException.class, () -> personService.updateById(invalidPersonId, updatePersonDTORequest));
+    }
+
+    @Test
+    void testGivenValidPersonIdThenReturnSuccessOnDelete() throws PersonNotFoundException {
+        var deletedPersonId = 1L;
+        Person expectedPersonToDelete = createFakeEntity();
+
+        when(personRepository.findById(deletedPersonId)).thenReturn(Optional.of(expectedPersonToDelete));
+        personService.delete(deletedPersonId);
+
+        verify(personRepository, times(1)).deleteById(deletedPersonId);
+    }
+
+    @Test
+    void testGivenInvalidPersonIdThenReturnSuccessOnDelete() {
+        var invalidPersonId = 1L;
+
+        when(personRepository.findById(invalidPersonId)).thenReturn(Optional.ofNullable(any(Person.class)));
+        assertThrows(PersonNotFoundException.class, () -> personService.delete(invalidPersonId));
     }
 
     private MessageResponseDTO createExpectedMessageResponse(Long id) {
