@@ -46,9 +46,7 @@ public class PersonControllerTest {
     @Test
     void testWhenPOSTIsCalledThenPersonShouldBeCreated() throws Exception {
         PersonDTO expectedPersonDTO = createFakeDTO();
-        MessageResponseDTO expectedResponseMessage = MessageResponseDTO.builder()
-                .message("Person successfully created with ID" + 1L)
-                .build();
+        MessageResponseDTO expectedResponseMessage = createMessageResponse("Created person with ID", 1L);
 
         when(personService.create(expectedPersonDTO)).thenReturn(expectedResponseMessage);
 
@@ -57,5 +55,11 @@ public class PersonControllerTest {
                 .content(asJsonString(expectedPersonDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message", is(expectedResponseMessage.getMessage())));
+    }
+
+    private MessageResponseDTO createMessageResponse(String message, Long id) {
+        return MessageResponseDTO.builder()
+                .message(message + id)
+                .build();
     }
 }
