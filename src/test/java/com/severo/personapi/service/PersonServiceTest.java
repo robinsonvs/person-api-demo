@@ -38,12 +38,11 @@ public class PersonServiceTest {
         PersonDTO personDTO = createFakeDTO();
         Person expectedSavedPerson = createFakeEntity();
 
+        when(personMapper.toModel(personDTO)).thenReturn(expectedSavedPerson);
         when(personRepository.save(any(Person.class))).thenReturn(expectedSavedPerson);
 
-        MessageResponseDTO expectedSuccessMessage = createExpectedMessageResponse(expectedSavedPerson.getId());
         MessageResponseDTO successMessage = personService.create(personDTO);
-
-        assertEquals(expectedSuccessMessage, successMessage);
+        assertEquals("Created person with ID 1", successMessage.getMessage());
     }
 
     @Test
