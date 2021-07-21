@@ -1,5 +1,9 @@
 package com.severo.personapi.utils;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.severo.personapi.dto.request.PersonDTO;
 import com.severo.personapi.entity.Person;
 
@@ -13,6 +17,18 @@ public class PersonUtils {
     private static final String CPF_NUMBER = "111.111.111-11";
     private static final long PERSON_ID = 1L;
     public static final LocalDate BIRTH_DATE = LocalDate.of(2010, 10, 1);
+
+    public static String asJsonString(PersonDTO personDTO) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.writeValueAsString(personDTO);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     public static PersonDTO createFakeDTO() {
         return PersonDTO.builder()
