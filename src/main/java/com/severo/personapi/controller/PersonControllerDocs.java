@@ -31,7 +31,7 @@ public interface PersonControllerDocs {
     List<PersonDTO> listAll();
 
 
-    @ApiOperation(value = "Returns person found by a given name")
+    @ApiOperation(value = "Returns person found by a given Id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success person found in the system"),
             @ApiResponse(code = 404, message = "Person with given name not found.")
