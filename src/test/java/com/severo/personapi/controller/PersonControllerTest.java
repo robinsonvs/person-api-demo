@@ -2,6 +2,7 @@ package com.severo.personapi.controller;
 
 import com.severo.personapi.dto.reponse.MessageResponseDTO;
 import com.severo.personapi.dto.request.PersonDTO;
+import com.severo.personapi.exception.PersonNotFoundException;
 import com.severo.personapi.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import java.util.Collections;
+import java.util.List;
+
 import static com.severo.personapi.utils.PersonUtils.asJsonString;
 import static com.severo.personapi.utils.PersonUtils.createFakeDTO;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +61,56 @@ public class PersonControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message", is(expectedResponseMessage.getMessage())));
     }
+
+    @Test
+    void testWhenGETWithValidIsCalledThenPersonShouldBeReturned() throws Exception {
+        var expectedValidId = 1L;
+        PersonDTO expectedPersonDTO = createFakeDTO();
+        expectedPersonDTO.setId(expectedValidId);
+
+        when(personService.findById(expectedValidId)).thenReturn(expectedPersonDTO);
+
+        mockMvc.perform(get(PERSON_API_URL_PATH + "/" + expectedValidId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.firstName", is("Robinson")))
+                .andExpect(jsonPath("$.lastName", is("Severo")));
+
+    }
+
+    @Test
+    void testWhenGETWithInvalidIsCalledThenErrorMessageShouldBeReturned() throws Exception {
+        var expectedValidId = 1L;
+        PersonDTO expectedPersonDTO = createFakeDTO();
+        expectedPersonDTO.setId(expectedValidId);
+
+        when(personService.findById(expectedValidId)).thenThrow(PersonNotFoundException.class);
+
+        mockMvc.perform(get(PERSON_API_URL_PATH + "/" + expectedValidId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testWhenGETIsCalledThenPersonListShouldBeReturned() throws Exception {
+        var expectedValidId = 1L;
+        PersonDTO expectedPersonDTO = createFakeDTO();
+        expectedPersonDTO.setId(expectedValidId);
+        List<PersonDTO> expectedPersonDTOList = Collections.singletonList(expectedPersonDTO);
+
+        when(personService.listAll()).thenReturn(expectedPersonDTOList);
+
+        mockMvc.perform(get(PERSON_API_URL_PATH)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].firstName", is("Robinson")))
+                .andExpect(jsonPath("$[0].lastName", is("Severo")));
+    }
+
+
+
 
     private MessageResponseDTO createMessageResponse(String message, Long id) {
         return MessageResponseDTO.builder()
