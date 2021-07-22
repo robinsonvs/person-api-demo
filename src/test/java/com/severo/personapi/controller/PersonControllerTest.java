@@ -22,8 +22,7 @@ import static com.severo.personapi.utils.PersonUtils.asJsonString;
 import static com.severo.personapi.utils.PersonUtils.createFakeDTO;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -109,7 +108,29 @@ public class PersonControllerTest {
                 .andExpect(jsonPath("$[0].lastName", is("Severo")));
     }
 
+    @Test
+    void testWhenPUTIsCalledThenPersonShouldBeUpdated() throws Exception {
+        var expedtedValidId = 1L;
+        PersonDTO expectedPersonDTO = createFakeDTO();
+        MessageResponseDTO expectedResponseMessage = createMessageResponse("Updated person with ID ", 1L);
 
+        when(personService.updateById(expedtedValidId, expectedPersonDTO)).thenReturn(expectedResponseMessage);
+
+        mockMvc.perform(put(PERSON_API_URL_PATH + "/" + expedtedValidId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(expectedPersonDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(expectedResponseMessage.getMessage())));
+    }
+
+    @Test
+    void testWhenDELETEIsCalledThenPersonShouldBeDeleted() throws Exception {
+        var expectedValidId = 1L;
+
+        mockMvc.perform(delete(PERSON_API_URL_PATH + "/" + expectedValidId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
 
 
     private MessageResponseDTO createMessageResponse(String message, Long id) {
