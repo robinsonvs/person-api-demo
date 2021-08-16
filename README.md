@@ -2,6 +2,8 @@
 
 System for managing a company's people through a REST API, created with Spring Boot.
 
+![](api.png)
+
 To run the project on the terminal, type the following command: 
 
 ```shell script
