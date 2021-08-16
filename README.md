@@ -4,6 +4,9 @@ System for managing a company's people through a REST API, created with Spring B
 
 ![](api.png)
 
+Link to access the project on Heroku: 
+* [Person API - Heroku](https://demo-people-api.herokuapp.com/swagger-ui.html#/person-controller)
+
 To run the project on the terminal, type the following command: 
 
 ```shell script
